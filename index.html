@@ -780,7 +780,7 @@
                         </div>
                         <div class="form-group">
                             <label>Cut Penalty (extra strokes added to cut line)</label>
-                            <input type="number" id="espnCutPenalty" value="5" min="0" style="width: 120px;">
+                            <input type="number" id="espnCutPenalty" value="8" min="0" style="width: 120px;">
                             <small style="color: #666;">The cut line is auto-detected from ESPN data. This is the extra penalty added on top.</small>
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -818,7 +818,7 @@
                         </div>
                         <div class="form-group">
                             <label>Cut Penalty (extra strokes)</label>
-                            <input type="number" id="cutPenalty" value="5" min="0" style="width: 120px;">
+                            <input type="number" id="cutPenalty" value="8" min="0" style="width: 120px;">
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <button class="btn" onclick="testScoringFetch()">Test Fetch</button>
@@ -1338,7 +1338,7 @@
                 console.warn('Live scores: could not find SCORE column, will try to infer.');
             }
 
-            const cutRoundPenalty = settingsData.cutRoundPenalty || 5;
+            const cutRoundPenalty = settingsData.cutRoundPenalty || 8;
             const wdPenalty = settingsData.wdPenalty || 20;
 
             data.slice(1).forEach(row => {
@@ -1432,7 +1432,7 @@
         if (!competition || !competition.competitors) throw new Error('No competitor data in ESPN response');
 
         const competitors = competition.competitors;
-        const cutRoundPenalty = scoringConfig.espnCutPenalty || 5;
+        const cutRoundPenalty = scoringConfig.espnCutPenalty !== undefined ? scoringConfig.espnCutPenalty : 8;
         const wdPenalty = settingsData.wdPenalty || 20;
         const eventId = event.id || competition.id;
 
@@ -2683,7 +2683,7 @@
         document.getElementById('sheetsApiUrl').value = scoringConfig.url || '';
         document.getElementById('refreshInterval').value = scoringConfig.refreshInterval || 60;
         document.getElementById('cutLineScore').value = settingsData.cutLineScore || 0;
-        document.getElementById('cutPenalty').value = settingsData.cutPenalty || 5;
+        document.getElementById('cutPenalty').value = settingsData.cutPenalty !== undefined ? settingsData.cutPenalty : 8;
         toggleScoringMode();
     }
 
@@ -2702,7 +2702,7 @@
         if (mode === 'espn') {
             config.espnTournamentId = document.getElementById('espnTournamentId').value.trim();
             config.espnRefreshInterval = parseInt(document.getElementById('espnRefreshInterval').value) || 60;
-            config.espnCutPenalty = parseInt(document.getElementById('espnCutPenalty').value) || 5;
+            config.espnCutPenalty = parseInt(document.getElementById('espnCutPenalty').value) || 8;
         } else if (mode === 'auto') {
             config.url = document.getElementById('sheetsApiUrl').value.trim();
             config.refreshInterval = parseInt(document.getElementById('refreshInterval').value) || 60;
@@ -2711,7 +2711,7 @@
         // Preserve fields from other modes so switching back doesn't lose config
         config.espnTournamentId = config.espnTournamentId || scoringConfig.espnTournamentId || '';
         config.espnRefreshInterval = config.espnRefreshInterval || scoringConfig.espnRefreshInterval || 60;
-        config.espnCutPenalty = config.espnCutPenalty !== undefined ? config.espnCutPenalty : (scoringConfig.espnCutPenalty || 5);
+        config.espnCutPenalty = config.espnCutPenalty !== undefined ? config.espnCutPenalty : (scoringConfig.espnCutPenalty !== undefined ? scoringConfig.espnCutPenalty : 8);
         config.url = config.url || scoringConfig.url || '';
         config.refreshInterval = config.refreshInterval || scoringConfig.refreshInterval || 60;
 
@@ -2719,7 +2719,7 @@
         updates[dbPath('scoringConfig')] = config;
         if (mode === 'auto') {
             updates[dbPath('settings/cutLineScore')] = parseInt(document.getElementById('cutLineScore').value) || 0;
-            updates[dbPath('settings/cutPenalty')] = parseInt(document.getElementById('cutPenalty').value) || 5;
+            updates[dbPath('settings/cutPenalty')] = parseInt(document.getElementById('cutPenalty').value) || 8;
         }
 
         db.ref().update(updates).then(() => {
@@ -2748,7 +2748,7 @@
         const oldTid = scoringConfig.espnTournamentId;
         const oldPenalty = scoringConfig.espnCutPenalty;
         scoringConfig.espnTournamentId = tid;
-        scoringConfig.espnCutPenalty = parseInt(document.getElementById('espnCutPenalty').value) || 5;
+        scoringConfig.espnCutPenalty = parseInt(document.getElementById('espnCutPenalty').value) || 8;
         try {
             await fetchEspnScores();
             alert('ESPN scores fetched! (client-side only — no Firebase writes)');
@@ -2954,7 +2954,7 @@
 
     function renderAdminSettings() {
         const s = getSettings();
-        document.getElementById('compName').value = s.compName || 'PGA Championship 2026';
+        document.getElementById('compName').value = s.compName || 'US Open 2026';
         document.getElementById('picksPerTeam').value = s.picksPerTeam || 8;
         document.getElementById('bestToCount').value = s.bestToCount || 4;
         document.getElementById('defaultScore').value = s.defaultScore || 10;
@@ -2966,17 +2966,17 @@
 
     function saveCompSettings() {
         const settings = {
-            compName: document.getElementById('compName').value.trim() || 'PGA Championship 2026',
+            compName: document.getElementById('compName').value.trim() || 'US Open 2026',
             picksPerTeam: parseInt(document.getElementById('picksPerTeam').value) || 8,
             bestToCount: parseInt(document.getElementById('bestToCount').value) || 4,
             defaultScore: parseInt(document.getElementById('defaultScore').value) || 10,
             wdPenalty: parseInt(document.getElementById('wdPenalty').value) || 20,
-            cutRoundPenalty: settingsData.cutRoundPenalty || 5,
+            cutRoundPenalty: settingsData.cutRoundPenalty !== undefined ? settingsData.cutRoundPenalty : 8,
             winnerBonus: settingsData.winnerBonus || -3,
             picksDeadline: document.getElementById('picksDeadline').value || '',
             picksLocked: document.getElementById('picksLocked').checked,
             cutLineScore: settingsData.cutLineScore || 0,
-            cutPenalty: settingsData.cutPenalty || 5
+            cutPenalty: settingsData.cutPenalty !== undefined ? settingsData.cutPenalty : 8
         };
 
         const winnerInput = document.getElementById('tournamentWinnerInput').value.trim();
