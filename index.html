@@ -10,23 +10,31 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <style>
+        :root {
+            --cp: #002D62;
+            --cd: #001040;
+            --cm: #003087;
+            --ca: #fdd835;
+            --cad: #f9a825;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #002D62 0%, #003087 50%, #002D62 100%);
+            background: linear-gradient(135deg, var(--cp) 0%, var(--cm) 50%, var(--cp) 100%);
             min-height: 100vh;
             color: #333;
         }
 
         /* ============ HEADER ============ */
         .header {
-            background: linear-gradient(90deg, #001040 0%, #002D62 50%, #001040 100%);
-            color: #fdd835;
+            background: linear-gradient(90deg, var(--cd) 0%, var(--cp) 50%, var(--cd) 100%);
+            color: var(--ca);
             padding: 20px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-bottom: 3px solid #fdd835;
+            border-bottom: 3px solid var(--ca);
             position: relative;
         }
         .header h1 { font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 5px; }
@@ -34,22 +42,22 @@
 
         .user-info {
             position: absolute; top: 20px; right: 20px;
-            color: #fdd835; display: flex; align-items: center; gap: 15px;
+            color: var(--ca); display: flex; align-items: center; gap: 15px;
         }
 
         /* ============ NAV ============ */
         .nav {
-            background: #001040; padding: 10px;
+            background: var(--cd); padding: 10px;
             display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
         }
         .nav button {
-            background: linear-gradient(180deg, #003087 0%, #002D62 100%);
-            color: #fdd835; border: 2px solid #fdd835;
+            background: linear-gradient(180deg, var(--cm) 0%, var(--cp) 100%);
+            color: var(--ca); border: 2px solid var(--ca);
             padding: 10px 20px; cursor: pointer; border-radius: 5px;
             font-weight: bold; transition: all 0.3s; font-size: 0.95em;
         }
         .nav button:hover, .nav button.active {
-            background: #fdd835; color: #001040;
+            background: var(--ca); color: var(--cd);
         }
 
         /* ============ LAYOUT ============ */
@@ -60,18 +68,18 @@
             margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
         .card h2 {
-            color: #002D62; border-bottom: 3px solid #fdd835;
+            color: var(--cp); border-bottom: 3px solid var(--ca);
             padding-bottom: 10px; margin-bottom: 20px;
         }
 
         /* ============ BUTTONS ============ */
         .btn {
-            background: linear-gradient(180deg, #003087 0%, #002D62 100%);
+            background: linear-gradient(180deg, var(--cm) 0%, var(--cp) 100%);
             color: white; border: none; padding: 12px 25px; cursor: pointer;
             border-radius: 5px; font-weight: bold; font-size: 1em; transition: all 0.3s;
         }
-        .btn:hover { background: linear-gradient(180deg, #1a4a8f 0%, #003087 100%); transform: translateY(-2px); }
-        .btn-gold { background: linear-gradient(180deg, #fdd835 0%, #f9a825 100%); color: #001040; }
+        .btn:hover { background: linear-gradient(180deg, #1a4a8f 0%, var(--cm) 100%); transform: translateY(-2px); }
+        .btn-gold { background: linear-gradient(180deg, var(--ca) 0%, var(--cad) 100%); color: var(--cd); }
         .btn-danger { background: linear-gradient(180deg, #dc3545 0%, #a71d2a 100%); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-sm { padding: 6px 14px; font-size: 0.85em; }
@@ -79,12 +87,12 @@
         /* ============ FORMS ============ */
         .login-container { max-width: 400px; margin: 50px auto; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #002D62; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--cp); }
         .form-group input, .form-group select {
             width: 100%; padding: 10px; border: 2px solid #ddd;
             border-radius: 5px; font-size: 1em;
         }
-        .form-group input:focus, .form-group select:focus { border-color: #002D62; outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--cp); outline: none; }
 
         .validation-error { background: #ffe6e6; border: 2px solid #dc3545; color: #dc3545; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
         .validation-success { background: #e6ffe6; border: 2px solid #28a745; color: #28a745; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
@@ -99,12 +107,12 @@
             padding: 14px 12px; text-align: left; border-bottom: 2px solid #ddd;
         }
         .leaderboard th {
-            background: linear-gradient(180deg, #002D62 0%, #001040 100%);
-            color: #fdd835; font-size: 0.95em;
+            background: linear-gradient(180deg, var(--cp) 0%, var(--cd) 100%);
+            color: var(--ca); font-size: 0.95em;
         }
         .leaderboard tr.leader-row td {
-            background: linear-gradient(90deg, #fdd835 0%, #fff8dc 50%, #fdd835 100%);
-            font-weight: bold; border: 2px solid #f9a825;
+            background: linear-gradient(90deg, var(--ca) 0%, #fff8dc 50%, var(--ca) 100%);
+            font-weight: bold; border: 2px solid var(--cad);
         }
         .leaderboard tr:hover td { background: #e8f0f8; }
         .leaderboard .trend-up { color: #28a745; font-weight: bold; }
@@ -120,7 +128,7 @@
         .team-table th, .team-table td {
             padding: 12px; text-align: left; border-bottom: 1px solid #ddd;
         }
-        .team-table th { background: #002D62; color: #fdd835; }
+        .team-table th { background: var(--cp); color: var(--ca); }
         .team-table .counting { background-color: #e8f0f8; font-weight: bold; }
         .team-table .not-counting { color: #999; }
         .team-table .cut { color: #dc3545; font-style: italic; }
@@ -129,11 +137,11 @@
         .golfer-picker { margin-top: 15px; }
         .bracket-section { margin-bottom: 20px; border: 2px solid #ddd; border-radius: 10px; overflow: hidden; }
         .bracket-header {
-            background: linear-gradient(180deg, #002D62 0%, #001040 100%);
-            color: #fdd835; padding: 12px 15px; font-weight: bold; font-size: 1.05em;
+            background: linear-gradient(180deg, var(--cp) 0%, var(--cd) 100%);
+            color: var(--ca); padding: 12px 15px; font-weight: bold; font-size: 1.05em;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .bracket-header.completed { background: linear-gradient(180deg, #0040a0 0%, #002060 100%); }
+        .bracket-header.completed { background: linear-gradient(180deg, var(--cm) 0%, var(--cd) 100%); }
         .bracket-header .bracket-status { font-size: 0.85em; opacity: 0.9; }
         .bracket-golfers { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px; padding: 10px; }
         .golfer-option {
@@ -141,8 +149,8 @@
             cursor: pointer; transition: all 0.2s; display: flex;
             justify-content: space-between; align-items: center;
         }
-        .golfer-option:hover { border-color: #002D62; background: #f0f4ff; }
-        .golfer-option.selected { border-color: #002D62; background: #d0e4f8; font-weight: bold; }
+        .golfer-option:hover { border-color: var(--cp); background: #f0f4ff; }
+        .golfer-option.selected { border-color: var(--cp); background: #d0e4f8; font-weight: bold; }
         .golfer-option.disabled { opacity: 0.4; cursor: not-allowed; }
         .golfer-option .rank { color: #999; font-size: 0.85em; }
 
@@ -154,9 +162,9 @@
 
         .pick-count {
             text-align: center; padding: 15px;
-            font-size: 1.3em; font-weight: bold; color: #002D62;
+            font-size: 1.3em; font-weight: bold; color: var(--cp);
             background: #f0f4ff; border-radius: 8px; margin-bottom: 15px;
-            border: 2px solid #002D62;
+            border: 2px solid var(--cp);
         }
         .pick-count.full { background: #d0e4f8; border-color: #28a745; color: #28a745; }
         .pick-count.over { background: #ffe6e6; border-color: #dc3545; color: #dc3545; }
@@ -165,26 +173,26 @@
             width: 100%; padding: 12px; border: 2px solid #ddd;
             border-radius: 8px; font-size: 1em; margin-bottom: 15px;
         }
-        .search-box:focus { border-color: #002D62; outline: none; }
+        .search-box:focus { border-color: var(--cp); outline: none; }
 
         /* ============ TEAM SECTIONS ============ */
         .team-section { margin-bottom: 30px; }
-        .team-section h3 { color: #002D62; margin-bottom: 10px; }
+        .team-section h3 { color: var(--cp); margin-bottom: 10px; }
 
         /* ============ RULES BOX ============ */
         .rules-box {
-            background: #fff8dc; border: 2px solid #fdd835;
+            background: #fff8dc; border: 2px solid var(--ca);
             border-radius: 10px; padding: 20px; margin-bottom: 20px;
         }
-        .rules-box h3 { color: #002D62; margin-bottom: 10px; }
+        .rules-box h3 { color: var(--cp); margin-bottom: 10px; }
         .rules-box ul { margin-left: 20px; }
         .rules-box li { margin-bottom: 8px; }
 
         /* ============ PRIZE CARDS ============ */
         .prize-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
         .prize-card {
-            background: linear-gradient(135deg, #fdd835 0%, #f9a825 100%);
-            padding: 20px; border-radius: 10px; text-align: center; color: #001040;
+            background: linear-gradient(135deg, var(--ca) 0%, var(--cad) 100%);
+            padding: 20px; border-radius: 10px; text-align: center; color: var(--cd);
         }
         .prize-card h3 { font-size: 1.3em; margin-bottom: 5px; }
         .prize-card .prize-amount { font-size: 2em; font-weight: bold; }
@@ -195,7 +203,7 @@
         }
         .prize-card.bogey-card h3 { font-size: 1.1em; margin-bottom: 3px; }
         .prize-pool-header { font-size: 1.05em; margin-bottom: 5px; }
-        .prize-pool-total { display: inline-block; background: #001040; color: #fdd835; padding: 4px 14px; border-radius: 20px; font-weight: bold; font-size: 1.1em; margin-top: 8px; }
+        .prize-pool-total { display: inline-block; background: var(--cd); color: var(--ca); padding: 4px 14px; border-radius: 20px; font-weight: bold; font-size: 1.1em; margin-top: 8px; }
 
         /* ============ ADMIN ============ */
         .admin-section {
@@ -210,11 +218,11 @@
         }
         .pick-card {
             background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;
-            padding: 15px; border-left: 4px solid #002D62; cursor: pointer;
+            padding: 15px; border-left: 4px solid var(--cp); cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .pick-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); border-left-color: #fdd835; }
-        .pick-card h4 { color: #002D62; margin-bottom: 8px; }
+        .pick-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); border-left-color: var(--ca); }
+        .pick-card h4 { color: var(--cp); margin-bottom: 8px; }
         .pick-card .status-badge { display: inline-block; padding: 3px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; }
         .status-submitted { background: #28a745; color: white; }
         .status-pending { background: #ffc107; color: #333; }
@@ -243,7 +251,7 @@
             align-items: center; z-index: 2000; flex-direction: column; color: white;
         }
         .spinner {
-            width: 50px; height: 50px; border: 5px solid #333; border-top-color: #fdd835;
+            width: 50px; height: 50px; border: 5px solid #333; border-top-color: var(--ca);
             border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -260,13 +268,13 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
         .modal-header {
-            background: linear-gradient(90deg, #001040 0%, #002D62 50%, #001040 100%);
-            color: #fdd835; padding: 20px; border-radius: 10px 10px 0 0;
+            background: linear-gradient(90deg, var(--cd) 0%, var(--cp) 50%, var(--cd) 100%);
+            color: var(--ca); padding: 20px; border-radius: 10px 10px 0 0;
             display: flex; justify-content: space-between; align-items: center;
         }
         .modal-header h2 { margin: 0; border: none; padding: 0; }
         .modal-close {
-            background: none; border: none; color: #fdd835;
+            background: none; border: none; color: var(--ca);
             font-size: 2em; cursor: pointer; padding: 0; line-height: 1;
         }
         .modal-close:hover { color: white; }
@@ -275,10 +283,10 @@
         /* ============ TABS ============ */
         .tab-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn {
-            padding: 10px 20px; background: #f0f0f0; border: 2px solid #002D62;
+            padding: 10px 20px; background: #f0f0f0; border: 2px solid var(--cp);
             border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s;
         }
-        .tab-btn:hover, .tab-btn.active { background: #002D62; color: #fdd835; }
+        .tab-btn:hover, .tab-btn.active { background: var(--cp); color: var(--ca); }
 
         .hidden { display: none !important; }
 
@@ -338,7 +346,7 @@
             right: 0;
             z-index: 9998;
             background: #1a1a2e;
-            border-top: 2px solid #fdd835;
+            border-top: 2px solid var(--ca);
             box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
             overflow: hidden;
         }
@@ -523,7 +531,7 @@
             transition: background 0.3s;
         }
         .ad-dot.active {
-            background: #fdd835;
+            background: var(--ca);
         }
 
         @media (max-width: 600px) {
@@ -627,9 +635,9 @@
 
         <!-- Home Page -->
         <div id="homePage" class="hidden">
-            <div class="card rules-box">
-                <h3>⛳ Competition Rules - US Open 2026</h3>
-                <ul>
+            <div id="rulesContainer" class="card rules-box">
+                <h3 id="rulesHeading">⛳ Competition Rules - US Open 2026</h3>
+                <ul id="rulesList">
                     <li>Pick <strong>1 golfer from each of the 8 brackets</strong> (brackets based on odds for top 64 players) to form your team of 8.</li>
                     <li>Your team score is calculated from the <strong>best 4 scores out of 8</strong> (relative to par). The <strong>lowest combined score wins</strong>.</li>
                     <li>If a golfer <strong>withdraws before the start</strong>, you will be given the golfer below in the bracket (or the top golfer if at the bottom). You can also choose another golfer in that bracket before the deadline.</li>
@@ -880,6 +888,66 @@
                         <input type="text" id="tournamentWinnerInput" placeholder="e.g. Scottie Scheffler">
                         <small style="color: #666;">Auto-detected from ESPN if available. Enter manually to override. The winner gets -3 applied to their score.</small>
                     </div>
+                    <div class="form-group" style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #ddd;">
+                        <label>💰 Prize Pool Settings</label>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">Leave prize amounts blank to show a "TBC" message instead.</small>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <label for="prizeEntryFee" style="font-weight: normal; font-size: 0.9em;">Entry Fee</label>
+                                <input type="text" id="prizeEntryFee" placeholder="e.g. €5" style="margin-top: 4px;">
+                            </div>
+                            <div>
+                                <label for="prizeFirst" style="font-weight: normal; font-size: 0.9em;">🥇 1st Prize</label>
+                                <input type="text" id="prizeFirst" placeholder="e.g. €50" style="margin-top: 4px;">
+                            </div>
+                            <div>
+                                <label for="prizeSecond" style="font-weight: normal; font-size: 0.9em;">🥈 2nd Prize</label>
+                                <input type="text" id="prizeSecond" placeholder="e.g. €20" style="margin-top: 4px;">
+                            </div>
+                            <div>
+                                <label for="prizeThird" style="font-weight: normal; font-size: 0.9em;">🥉 3rd Prize</label>
+                                <input type="text" id="prizeThird" placeholder="e.g. €10" style="margin-top: 4px;">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="prizeBogey" style="font-weight: normal; font-size: 0.9em;">🐗 Bogey / Last Place Prize</label>
+                            <input type="text" id="prizeBogey" placeholder="e.g. Free entry to next comp" style="margin-top: 4px;">
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <label for="prizeNote" style="font-weight: normal; font-size: 0.9em;">Prize Note (shown when prizes are TBC)</label>
+                            <input type="text" id="prizeNote" placeholder="Prize money TBC..." style="margin-top: 4px;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #ddd;">
+                        <label for="compVenue">Venue / Subtitle</label>
+                        <input type="text" id="compVenue" placeholder="e.g. Oakmont Country Club, Pennsylvania">
+                        <small style="color: #666;">Displayed under the title in the header.</small>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #ddd;">
+                        <label>🎨 Theme Colours</label>
+                        <small style="color: #666; display: block; margin-bottom: 10px;">Primary = main dark colour (nav, headers). Accent = highlight colour (gold buttons, borders). Changes apply after saving.</small>
+                        <div style="display: flex; gap: 25px; flex-wrap: wrap; align-items: flex-start;">
+                            <div>
+                                <label for="themeColor" style="font-weight: normal; font-size: 0.9em;">Primary Colour</label>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                    <input type="color" id="themeColor" value="#002D62" oninput="document.getElementById('themeColorHex').value=this.value" style="width:50px;height:36px;padding:2px;border:1px solid #ccc;border-radius:4px;cursor:pointer;">
+                                    <input type="text" id="themeColorHex" placeholder="#002D62" maxlength="7" oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))document.getElementById('themeColor').value=this.value" style="width:90px;font-family:monospace;">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="accentColor" style="font-weight: normal; font-size: 0.9em;">Accent Colour</label>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                    <input type="color" id="accentColor" value="#fdd835" oninput="document.getElementById('accentColorHex').value=this.value" style="width:50px;height:36px;padding:2px;border:1px solid #ccc;border-radius:4px;cursor:pointer;">
+                                    <input type="text" id="accentColorHex" placeholder="#fdd835" maxlength="7" oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))document.getElementById('accentColor').value=this.value" style="width:90px;font-family:monospace;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #ddd;">
+                        <label for="compRules">Competition Rules</label>
+                        <small style="color: #666; display: block; margin-bottom: 8px;">One rule per line. Use &lt;strong&gt;text&lt;/strong&gt; for bold. Leave blank to use the built-in default rules.</small>
+                        <textarea id="compRules" rows="10" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:5px;font-size:0.85em;font-family:inherit;resize:vertical;" placeholder="One rule per line..."></textarea>
+                    </div>
                     <button class="btn btn-gold" onclick="saveCompSettings()">Save Settings</button>
                 </div>
 
@@ -977,7 +1045,17 @@
         picksDeadline: '2026-06-18T10:00',
         picksLocked: false,
         cutLineScore: 0,
-        cutPenalty: 8
+        cutPenalty: 8,
+        entryFee: '€5',
+        prizeFirst: '',
+        prizeSecond: '',
+        prizeThird: '',
+        prizeBogey: '',
+        prizeNote: 'Prize money and number of prizes will depend on the number of entrants and will be communicated before competition starts.',
+        venue: 'Oakmont Country Club, Pennsylvania',
+        themeColor: '#002D62',
+        accentColor: '#fdd835',
+        rules: []
     };
 
     // ============================================================
@@ -1004,8 +1082,7 @@
                 return true;
             }
 
-            // Update header with comp name
-            document.querySelector('.header .subtitle').textContent = `Oakmont Country Club, Pennsylvania`;
+            // Subtitle/venue is set dynamically by updateHeaderTitle() when settings load
 
             db.ref('.info/connected').on('value', (snap) => {
                 updateSyncStatus(snap.val() ? 'connected' : 'disconnected');
@@ -1218,9 +1295,38 @@
     }
 
     function updateHeaderTitle() {
-        const compName = settingsData.compName || 'US Open 2026';
+        const s = getSettings();
+        const compName = s.compName || 'US Open 2026';
         document.querySelector('.header h1').textContent = `⛳ ${compName} Golf Comp ⛳`;
         document.title = `⛳ ${compName} - Golf Comp`;
+        const subtitleEl = document.querySelector('.header .subtitle');
+        if (subtitleEl) subtitleEl.textContent = s.venue || '';
+        applyTheme(s.themeColor, s.accentColor);
+    }
+
+    // ============================================================
+    // THEME
+    // ============================================================
+    function hexToRgb(hex) {
+        const h = hex.replace('#', '');
+        return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+    }
+    function blendHex(hex1, hex2, ratio) {
+        const [r1,g1,b1] = hexToRgb(hex1), [r2,g2,b2] = hexToRgb(hex2);
+        const r = Math.round(r1*(1-ratio)+r2*ratio).toString(16).padStart(2,'0');
+        const g = Math.round(g1*(1-ratio)+g2*ratio).toString(16).padStart(2,'0');
+        const b = Math.round(b1*(1-ratio)+b2*ratio).toString(16).padStart(2,'0');
+        return `#${r}${g}${b}`;
+    }
+    function applyTheme(primary, accent) {
+        const p = (primary && /^#[0-9a-fA-F]{6}$/.test(primary)) ? primary : '#002D62';
+        const a = (accent  && /^#[0-9a-fA-F]{6}$/.test(accent))  ? accent  : '#fdd835';
+        const root = document.documentElement;
+        root.style.setProperty('--cp', p);
+        root.style.setProperty('--cd', blendHex(p, '#000000', 0.4));
+        root.style.setProperty('--cm', blendHex(p, '#ffffff', 0.15));
+        root.style.setProperty('--ca', a);
+        root.style.setProperty('--cad', blendHex(a, '#000000', 0.08));
     }
 
     // ============================================================
@@ -2024,50 +2130,38 @@
 
         document.getElementById('homeStatusOverview').innerHTML = statusHtml;
 
-        // Prize pool — comp-specific
+        // Update rules heading and list from settings
+        const rulesHeadingEl = document.getElementById('rulesHeading');
+        const rulesListEl = document.getElementById('rulesList');
+        if (rulesHeadingEl) rulesHeadingEl.innerHTML = `⛳ Competition Rules - ${s.compName || 'US Open 2026'}`;
+        if (rulesListEl && s.rules && s.rules.length > 0) {
+            rulesListEl.innerHTML = s.rules.map(rule => `<li>${rule}</li>`).join('');
+        }
+
+
+        // Prize pool — driven by admin settings
         const prizeEl = document.getElementById('prizePoolContent');
         if (prizeEl) {
-            if (compId === 'comp1') {
-                prizeEl.innerHTML = `
-                    <p class="prize-pool-header">Entry Fee: <strong>€5</strong> per person — 16 teams</p>
-                    <p><span class="prize-pool-total">💰 €80 Prize Pool</span></p>
-                    <div class="prize-info">
-                        <div class="prize-card">
-                            <h3>🥇 1st</h3>
-                            <p class="prize-amount">€50</p>
-                        </div>
-                        <div class="prize-card">
-                            <h3>🥈 2nd</h3>
-                            <p class="prize-amount">€20</p>
-                        </div>
-                        <div class="prize-card">
-                            <h3>🥉 3rd</h3>
-                            <p class="prize-amount">€10</p>
-                        </div>
-                        <div class="prize-card bogey-card">
-                            <h3>🐗 Bogey Prize — Last Place</h3>
-                            <p>Free entry to the next competition</p>
-                            <p style="margin-top: 4px; font-size: 0.85em; color: #555;">Sponsored by <a href="https://gerbradyfinancial.ie/index.html" target="_blank" rel="noopener noreferrer" style="color: #002D62; font-weight: bold;">Ger Brady Financial Services</a></p>
-                        </div>
-                    </div>`;
-            } else if (compId === 'comp3') {
-                prizeEl.innerHTML = `
-                    <p class="prize-pool-header">Entry Fee: <strong>\u20ac5</strong> per person \u2014 12 teams</p>
-                    <p><span class="prize-pool-total">\ud83d\udcb0 \u20ac60 Prize Pool</span></p>
-                    <div class="prize-info" style="grid-template-columns: repeat(2, 1fr);">
-                        <div class="prize-card">
-                            <h3>\ud83e\udd47 1st</h3>
-                            <p class="prize-amount">\u20ac45</p>
-                        </div>
-                        <div class="prize-card">
-                            <h3>\ud83e\udd48 2nd</h3>
-                            <p class="prize-amount">\u20ac15</p>
-                        </div>
-                    </div>`;
+            const entryFee = s.entryFee || '€5';
+            const p1 = s.prizeFirst || '';
+            const p2 = s.prizeSecond || '';
+            const p3 = s.prizeThird || '';
+            const bogey = s.prizeBogey || '';
+            const note = s.prizeNote || 'Prize money and number of prizes will depend on the number of entrants and will be communicated before competition starts.';
+
+            if (p1 || p2 || p3) {
+                let html = `<p class="prize-pool-header">Entry Fee: <strong>${entryFee}</strong> per person</p>`;
+                html += '<div class="prize-info">';
+                if (p1) html += `<div class="prize-card"><h3>🥇 1st</h3><p class="prize-amount">${p1}</p></div>`;
+                if (p2) html += `<div class="prize-card"><h3>🥈 2nd</h3><p class="prize-amount">${p2}</p></div>`;
+                if (p3) html += `<div class="prize-card"><h3>🥉 3rd</h3><p class="prize-amount">${p3}</p></div>`;
+                if (bogey) html += `<div class="prize-card bogey-card"><h3>🐗 Bogey Prize — Last Place</h3><p>${bogey}</p></div>`;
+                html += '</div>';
+                prizeEl.innerHTML = html;
             } else {
                 prizeEl.innerHTML = `
-                    <p>Entry Fee: <strong>€5</strong> per person</p>
-                    <p style="margin-top: 5px; color: #666; font-size: 0.9em;">Prize money and number of prizes depend on the number of entrants and will be communicated before the competition starts.</p>
+                    <p>Entry Fee: <strong>${entryFee}</strong> per person</p>
+                    <p style="margin-top: 5px; color: #666; font-size: 0.9em;">${note}</p>
                     <div class="prize-info">
                         <div class="prize-card"><h3>🥇 1st</h3><p>TBC</p></div>
                         <div class="prize-card"><h3>🥈 2nd</h3><p>TBC</p></div>
@@ -2962,6 +3056,20 @@
         document.getElementById('picksDeadline').value = s.picksDeadline || '';
         document.getElementById('picksLocked').checked = s.picksLocked || false;
         document.getElementById('tournamentWinnerInput').value = tournamentWinner || '';
+        document.getElementById('prizeEntryFee').value = s.entryFee || '';
+        document.getElementById('prizeFirst').value = s.prizeFirst || '';
+        document.getElementById('prizeSecond').value = s.prizeSecond || '';
+        document.getElementById('prizeThird').value = s.prizeThird || '';
+        document.getElementById('prizeBogey').value = s.prizeBogey || '';
+        document.getElementById('prizeNote').value = s.prizeNote || '';
+        document.getElementById('compVenue').value = s.venue || '';
+        const tc = s.themeColor || '#002D62';
+        const ac = s.accentColor || '#fdd835';
+        document.getElementById('themeColor').value = tc;
+        document.getElementById('themeColorHex').value = tc;
+        document.getElementById('accentColor').value = ac;
+        document.getElementById('accentColorHex').value = ac;
+        document.getElementById('compRules').value = (s.rules && s.rules.length > 0) ? s.rules.join('\n') : '';
     }
 
     function saveCompSettings() {
@@ -2976,7 +3084,17 @@
             picksDeadline: document.getElementById('picksDeadline').value || '',
             picksLocked: document.getElementById('picksLocked').checked,
             cutLineScore: settingsData.cutLineScore || 0,
-            cutPenalty: settingsData.cutPenalty !== undefined ? settingsData.cutPenalty : 8
+            cutPenalty: settingsData.cutPenalty !== undefined ? settingsData.cutPenalty : 8,
+            entryFee: document.getElementById('prizeEntryFee').value.trim(),
+            prizeFirst: document.getElementById('prizeFirst').value.trim(),
+            prizeSecond: document.getElementById('prizeSecond').value.trim(),
+            prizeThird: document.getElementById('prizeThird').value.trim(),
+            prizeBogey: document.getElementById('prizeBogey').value.trim(),
+            prizeNote: document.getElementById('prizeNote').value.trim(),
+            venue: document.getElementById('compVenue').value.trim(),
+            themeColor: document.getElementById('themeColor').value || '#002D62',
+            accentColor: document.getElementById('accentColor').value || '#fdd835',
+            rules: document.getElementById('compRules').value.split('\n').map(r => r.trim()).filter(r => r.length > 0)
         };
 
         const winnerInput = document.getElementById('tournamentWinnerInput').value.trim();
