@@ -872,6 +872,17 @@
                     <div class="form-group">
                         <label>WD/DQ Penalty Score</label>
                         <input type="number" id="wdPenalty" value="20" min="0" style="width: 100px;">
+                        <small style="color: #666;">Score recorded for the full competition if a golfer WDs or is DQ'd during play.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Missed Cut Penalty (per round)</label>
+                        <input type="number" id="cutRoundPenalty" value="8" min="0" style="width: 100px;">
+                        <small style="color: #666;">Extra strokes added per missed round (×2 for a 4-round tournament = +16 total added to their 2-round score).</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Winner Bonus (applied to tournament winner)</label>
+                        <input type="number" id="winnerBonus" value="-3" style="width: 100px;">
+                        <small style="color: #666;">Use a negative number for a bonus (e.g. -3 means the winner gets -3 applied to their score).</small>
                     </div>
                     <div class="form-group">
                         <label>Picks Deadline</label>
@@ -2071,6 +2082,37 @@
     }
 
     // ============================================================
+    // DEFAULT RULES (auto-generated from settings)
+    // ============================================================
+    function getDefaultRules(s) {
+        const totalBrackets = getBracketNames().length || 8;
+        const bestCount = s.bestToCount || 4;
+        const wdPen = s.wdPenalty !== undefined ? s.wdPenalty : 20;
+        const cutPen = s.cutRoundPenalty !== undefined ? s.cutRoundPenalty : 8;
+        const cutTotal = cutPen * 2;
+        const bonus = s.winnerBonus !== undefined ? s.winnerBonus : -3;
+        const bonusDisplay = bonus < 0 ? bonus : `+${bonus}`;
+        const compName = s.compName || 'Golf Comp';
+        const entryFee = s.entryFee || '€5';
+        const deadline = s.picksDeadline
+            ? new Date(s.picksDeadline).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : 'the deadline';
+        return [
+            `Pick <strong>1 golfer from each of the ${totalBrackets} brackets</strong> (brackets based on odds for top ${totalBrackets * 8} players) to form your team of ${totalBrackets}.`,
+            `Your team score is calculated from the <strong>best ${bestCount} scores out of ${totalBrackets}</strong> (relative to par). The <strong>lowest combined score wins</strong>.`,
+            `If a golfer <strong>withdraws before the start</strong>, you will be given the golfer below in the bracket (or the top golfer if at the bottom). You can also choose another golfer in that bracket before the deadline.`,
+            `If a golfer <strong>withdraws or is disqualified during the tournament</strong>, a score of <strong>+${wdPen}</strong> is recorded for the entire competition.`,
+            `If a golfer <strong>misses the cut</strong>, they receive <strong>+${cutPen} for each missed round</strong> (+${cutTotal} total) added to their 2-round score.`,
+            `An extra <strong>${bonusDisplay} bonus</strong> is applied to the golfer who <strong>wins the ${compName}</strong>.`,
+            `If 2 competitors are tied on score, <strong>all ${totalBrackets} golfers</strong> on their team count to break the tie.`,
+            `Only <strong>one entry per person</strong> — entrants must be <strong>over 18</strong> as at 01 Jan 2026.`,
+            `The <strong>entry fee is ${entryFee}</strong> — please Revolut Fran the entry fee when submitting your team.`,
+            `Prize money and number of prizes will depend on the number of entrants and will be communicated before competition starts.`,
+            `Picks must be submitted <strong>before ${deadline}</strong>.`
+        ];
+    }
+
+    // ============================================================
     // HOME PAGE
     // ============================================================
     function renderHome() {
@@ -2133,9 +2175,11 @@
         // Update rules heading and list from settings
         const rulesHeadingEl = document.getElementById('rulesHeading');
         const rulesListEl = document.getElementById('rulesList');
-        if (rulesHeadingEl) rulesHeadingEl.innerHTML = `⛳ Competition Rules - ${s.compName || 'US Open 2026'}`;
-        if (rulesListEl && s.rules && s.rules.length > 0) {
-            rulesListEl.innerHTML = s.rules.map(rule => `<li>${rule}</li>`).join('');
+        const compName = s.compName || 'Golf Comp';
+        if (rulesHeadingEl) rulesHeadingEl.innerHTML = `⛳ Competition Rules - ${compName}`;
+        if (rulesListEl) {
+            const rulesToShow = (s.rules && s.rules.length > 0) ? s.rules : getDefaultRules(s);
+            rulesListEl.innerHTML = rulesToShow.map(rule => `<li>${rule}</li>`).join('');
         }
 
 
@@ -3052,7 +3096,9 @@
         document.getElementById('picksPerTeam').value = s.picksPerTeam || 8;
         document.getElementById('bestToCount').value = s.bestToCount || 4;
         document.getElementById('defaultScore').value = s.defaultScore || 10;
-        document.getElementById('wdPenalty').value = s.wdPenalty || 20;
+        document.getElementById('wdPenalty').value = s.wdPenalty !== undefined ? s.wdPenalty : 20;
+        document.getElementById('cutRoundPenalty').value = s.cutRoundPenalty !== undefined ? s.cutRoundPenalty : 8;
+        document.getElementById('winnerBonus').value = s.winnerBonus !== undefined ? s.winnerBonus : -3;
         document.getElementById('picksDeadline').value = s.picksDeadline || '';
         document.getElementById('picksLocked').checked = s.picksLocked || false;
         document.getElementById('tournamentWinnerInput').value = tournamentWinner || '';
@@ -3069,7 +3115,8 @@
         document.getElementById('themeColorHex').value = tc;
         document.getElementById('accentColor').value = ac;
         document.getElementById('accentColorHex').value = ac;
-        document.getElementById('compRules').value = (s.rules && s.rules.length > 0) ? s.rules.join('\n') : '';
+        const rulesToDisplay = (s.rules && s.rules.length > 0) ? s.rules : getDefaultRules(s);
+        document.getElementById('compRules').value = rulesToDisplay.join('\n');
     }
 
     function saveCompSettings() {
@@ -3079,8 +3126,8 @@
             bestToCount: parseInt(document.getElementById('bestToCount').value) || 4,
             defaultScore: parseInt(document.getElementById('defaultScore').value) || 10,
             wdPenalty: parseInt(document.getElementById('wdPenalty').value) || 20,
-            cutRoundPenalty: settingsData.cutRoundPenalty !== undefined ? settingsData.cutRoundPenalty : 8,
-            winnerBonus: settingsData.winnerBonus || -3,
+            cutRoundPenalty: parseInt(document.getElementById('cutRoundPenalty').value) || 8,
+            winnerBonus: parseInt(document.getElementById('winnerBonus').value) || -3,
             picksDeadline: document.getElementById('picksDeadline').value || '',
             picksLocked: document.getElementById('picksLocked').checked,
             cutLineScore: settingsData.cutLineScore || 0,
