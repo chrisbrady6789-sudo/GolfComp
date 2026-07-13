@@ -1216,6 +1216,8 @@
         'Bracket 8': ['Harry Hall', 'Keith Mitchell', 'Daniel Berger', 'Dustin Johnson', 'Sahith Theegala', 'Lucas Herbert', 'Michael Brennan', 'Michael Kim']
     };
 
+    let settingsLoaded = false;
+
     function setupRealtimeListeners() {
         dbRef('users').on('value', (snapshot) => {
             usersData = snapshot.val() || {};
@@ -1249,6 +1251,7 @@
 
         dbRef('settings').on('value', (snapshot) => {
             settingsData = { ...DEFAULT_SETTINGS, ...snapshot.val() };
+            settingsLoaded = true;
             checkDataLoaded();
             refreshCurrentPage();
             updateHeaderTitle();
@@ -1276,7 +1279,7 @@
     }
 
     function checkDataLoaded() {
-        if (!dataLoaded && usersData) {
+        if (!dataLoaded && usersData && settingsLoaded) {
             dataLoaded = true;
             document.getElementById('loadingOverlay').classList.add('hidden');
             checkLoggedIn();
@@ -3120,19 +3123,42 @@
     }
 
     function saveCompSettings() {
+        // Build the settings first so we can generate the default rules from the NEW values
+        const newCutPenalty = parseInt(document.getElementById('cutRoundPenalty').value) || 8;
+        const newWdPenalty = parseInt(document.getElementById('wdPenalty').value) || 20;
+        const newWinnerBonus = parseInt(document.getElementById('winnerBonus').value) || -3;
+        const newBestToCount = parseInt(document.getElementById('bestToCount').value) || 4;
+        const newCompName = document.getElementById('compName').value.trim() || 'Golf Comp';
+        const newEntryFee = document.getElementById('prizeEntryFee').value.trim();
+        const newDeadline = document.getElementById('picksDeadline').value || '';
+
+        // Compare textarea content against the auto-generated defaults using the NEW values.
+        // If they match (user left them unchanged or edited only the settings fields),
+        // store rules:[] so the homepage always re-derives from the current settings.
+        const typedRules = document.getElementById('compRules').value.split('\n').map(r => r.trim()).filter(r => r.length > 0);
+        const tempSettings = {
+            compName: newCompName, bestToCount: newBestToCount,
+            wdPenalty: newWdPenalty, cutRoundPenalty: newCutPenalty,
+            winnerBonus: newWinnerBonus, entryFee: newEntryFee, picksDeadline: newDeadline
+        };
+        const autoRules = getDefaultRules(tempSettings);
+        const rulesAreDefault = typedRules.length === autoRules.length &&
+            typedRules.every((r, i) => r === autoRules[i]);
+        const rulesToSave = rulesAreDefault ? [] : typedRules;
+
         const settings = {
-            compName: document.getElementById('compName').value.trim() || 'US Open 2026',
+            compName: newCompName,
             picksPerTeam: parseInt(document.getElementById('picksPerTeam').value) || 8,
-            bestToCount: parseInt(document.getElementById('bestToCount').value) || 4,
+            bestToCount: newBestToCount,
             defaultScore: parseInt(document.getElementById('defaultScore').value) || 10,
-            wdPenalty: parseInt(document.getElementById('wdPenalty').value) || 20,
-            cutRoundPenalty: parseInt(document.getElementById('cutRoundPenalty').value) || 8,
-            winnerBonus: parseInt(document.getElementById('winnerBonus').value) || -3,
-            picksDeadline: document.getElementById('picksDeadline').value || '',
+            wdPenalty: newWdPenalty,
+            cutRoundPenalty: newCutPenalty,
+            winnerBonus: newWinnerBonus,
+            picksDeadline: newDeadline,
             picksLocked: document.getElementById('picksLocked').checked,
             cutLineScore: settingsData.cutLineScore || 0,
             cutPenalty: settingsData.cutPenalty !== undefined ? settingsData.cutPenalty : 8,
-            entryFee: document.getElementById('prizeEntryFee').value.trim(),
+            entryFee: newEntryFee,
             prizeFirst: document.getElementById('prizeFirst').value.trim(),
             prizeSecond: document.getElementById('prizeSecond').value.trim(),
             prizeThird: document.getElementById('prizeThird').value.trim(),
@@ -3141,7 +3167,7 @@
             venue: document.getElementById('compVenue').value.trim(),
             themeColor: document.getElementById('themeColor').value || '#002D62',
             accentColor: document.getElementById('accentColor').value || '#fdd835',
-            rules: document.getElementById('compRules').value.split('\n').map(r => r.trim()).filter(r => r.length > 0)
+            rules: rulesToSave
         };
 
         const winnerInput = document.getElementById('tournamentWinnerInput').value.trim();
